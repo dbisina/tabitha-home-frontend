@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { 
   FaGraduationCap,
   FaBook,
-  FaChartLine,
+  FaArrowUp,
   FaTrophy,
   FaStar,
   FaPlus,
@@ -14,7 +14,7 @@ import {
   FaCalendarAlt,
   FaSchool,
   FaUserTie,
-  FaTarget,
+  FaBullseye,
   FaAward,
   FaBookOpen,
   FaPencilAlt,
@@ -222,8 +222,8 @@ const EducationProgress = ({ childId }) => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: FaGraduationCap },
     { id: 'subjects', label: 'Current Subjects', icon: FaBook },
-    { id: 'progress', label: 'Academic Progress', icon: FaChartLine },
-    { id: 'goals', label: 'Goals & Targets', icon: FaTarget },
+    { id: 'progress', label: 'Academic Progress', icon: FaArrowUp },
+    { id: 'goals', label: 'Goals & Targets', icon: FaBullseye },
     { id: 'extracurricular', label: 'Activities', icon: FaUsers },
     { id: 'reports', label: 'Report Cards', icon: FaAward }
   ];
@@ -299,7 +299,7 @@ const EducationProgress = ({ childId }) => {
             variant="outline"
             size="sm"
             onClick={() => setShowAddGoal(true)}
-            icon={FaTarget}
+            icon={FaBullseye}
           >
             Add Goal
           </Button>
@@ -381,7 +381,7 @@ const EducationProgress = ({ childId }) => {
               <div className="th-academic-card">
                 <div className="th-card-header">
                   <h3 className="th-card-title">
-                    <FaChartLine className="th-card-icon" />
+                    <FaArrowUp className="th-card-icon" />
                     Current Performance
                   </h3>
                 </div>

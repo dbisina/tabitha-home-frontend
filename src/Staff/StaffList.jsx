@@ -25,7 +25,7 @@ import {
   FaClock,
   FaExclamationTriangle,
   FaSort,
-  FaGrid,
+  FaTh,
   FaList,
   FaIdCard,
   FaAward,
@@ -579,7 +579,7 @@ const StaffList = () => {
               onClick={() => setViewMode('cards')}
               title="Card View"
             >
-              <FaGrid />
+              <FaTh />
             </button>
             <button
               className={`th-view-btn ${viewMode === 'table' ? 'active' : ''}`}

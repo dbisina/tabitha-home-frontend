@@ -1,6 +1,7 @@
+// src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 
 // Context Providers
@@ -20,6 +21,7 @@ import ChildProfile from './pages/children/ChildProfile';
 import AddChild from './pages/children/AddChild';
 import StaffList from './pages/staff/StaffList';
 import Reports from './pages/reports/Reports';
+import ReportBuilder from './pages/reports/ReportBuilder';
 
 // Components
 import ProtectedRoute from './components/Common/ProtectedRoute';
@@ -78,40 +80,16 @@ function App() {
                           
                           {/* Reports Routes */}
                           <Route path="/reports" element={<Reports />} />
+                          <Route path="/reports/builder" element={<ReportBuilder />} />
                           
+                          {/* Default redirect */}
                           <Route path="*" element={<Navigate to="/dashboard" replace />} />
                         </Routes>
                       </MainLayout>
                     </ProtectedRoute>
                   } />
                 </Routes>
-
-                {/* Global Toast Notifications */}
-                <Toaster
-                  position="top-right"
-                  toastOptions={{
-                    duration: 4000,
-                    style: {
-                      background: 'var(--th-white)',
-                      color: 'var(--th-gray-800)',
-                      borderRadius: '12px',
-                      boxShadow: 'var(--th-shadow-lg)',
-                      border: '1px solid rgba(230, 126, 34, 0.1)',
-                    },
-                    success: {
-                      iconTheme: {
-                        primary: 'var(--th-secondary-solid)',
-                        secondary: 'white',
-                      },
-                    },
-                    error: {
-                      iconTheme: {
-                        primary: 'var(--th-warm)',
-                        secondary: 'white',
-                      },
-                    },
-                  }}
-                />
+                <Toaster position="top-right" />
               </div>
             </Router>
           </AuthProvider>

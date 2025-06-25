@@ -22,7 +22,7 @@ import {
   FaCheckCircle,
   FaClock,
   FaFolderOpen,
-  FaShield
+  FaShieldAlt
 } from 'react-icons/fa';
 import { format, parseISO, isAfter, subMonths } from 'date-fns';
 import Button from '../UI/Button/Button';

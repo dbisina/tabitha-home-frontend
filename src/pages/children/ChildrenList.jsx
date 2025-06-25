@@ -12,7 +12,7 @@ import {
   FaUserMd,
   FaEye,
   FaEdit,
-  FaGrid,
+  FaTh,
   FaList,
   FaSortAmountDown,
   FaSortAmountUp,
@@ -416,7 +416,7 @@ const ChildrenList = () => {
               onClick={() => setViewMode('cards')}
               title="Card View"
             >
-              <FaGrid />
+              <FaTh />
             </button>
             <button
               className={`th-view-btn ${viewMode === 'table' ? 'th-view-active' : ''}`}

@@ -11,7 +11,7 @@ import {
   FaCog,
   FaFilter,
   FaChartBar,
-  FaChartLine,
+  FaArrowUp,
   FaChartPie,
   FaTable,
   FaCalendarAlt,
@@ -199,7 +199,7 @@ const ReportBuilder = () => {
   const chartTypes = [
     { id: 'table', label: 'Table', icon: FaTable, description: 'Tabular data display' },
     { id: 'bar', label: 'Bar Chart', icon: FaChartBar, description: 'Compare values across categories' },
-    { id: 'line', label: 'Line Chart', icon: FaChartLine, description: 'Show trends over time' },
+    { id: 'line', label: 'Line Chart', icon: FaArrowUp, description: 'Show trends over time' },
     { id: 'pie', label: 'Pie Chart', icon: FaChartPie, description: 'Show proportions and percentages' },
     { id: 'doughnut', label: 'Doughnut Chart', icon: FaChartPie, description: 'Alternative pie chart style' }
   ];

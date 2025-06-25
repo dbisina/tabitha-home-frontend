@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   FaChartBar,
-  FaChartLine,
+  FaArrowUp,
   FaChartPie,
   FaFileAlt,
   FaDownload,
@@ -27,8 +27,8 @@ import {
   FaFileExport,
   FaFileExcel,
   FaFilePdf,
-  FaTrendingUp,
-  FaTrendingDown,
+  FaArrowUp,
+  FaArrowDown,
   FaEquals,
   FaMapMarkerAlt,
   FaHeart,
@@ -488,7 +488,7 @@ const ReportsDashboard = () => {
           <div className="th-chart-card">
             <div className="th-chart-header">
               <h3 className="th-chart-title">
-                <FaChartLine className="th-chart-icon" />
+                <FaArrowUp className="th-chart-icon" />
                 Admission & Exit Trends
               </h3>
               <div className="th-chart-actions">

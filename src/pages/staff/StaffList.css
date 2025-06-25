@@ -1,0 +1,353 @@
+/* src/pages/staff/StaffList.css */
+.th-staff-list {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .th-staff-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    gap: 2rem;
+  }
+  
+  .th-header-content {
+    flex: 1;
+  }
+  
+  .th-page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .th-page-description {
+    color: #6b7280;
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  .th-header-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  
+  /* Stats Cards */
+  .th-staff-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .th-stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s ease;
+  }
+  
+  .th-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .th-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #E67E22 0%, #F39C12 100%);
+    color: white;
+    font-size: 1.25rem;
+  }
+  
+  .th-stat-icon.active {
+    background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%);
+  }
+  
+  .th-stat-icon.medical {
+    background: linear-gradient(135deg, #3498DB 0%, #5DADE2 100%);
+  }
+  
+  .th-stat-icon.education {
+    background: linear-gradient(135deg, #9B59B6 0%, #BB6BD9 100%);
+  }
+  
+  .th-stat-content {
+    flex: 1;
+  }
+  
+  .th-stat-value {
+    display: block;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1;
+  }
+  
+  .th-stat-label {
+    display: block;
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+  
+  /* Filters */
+  .th-staff-filters {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .th-filters-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .th-staff-search {
+    grid-column: span 1;
+  }
+  
+  /* Staff Grid */
+  .th-staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .th-staff-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .th-staff-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: #E67E22;
+  }
+  
+  .th-staff-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .th-staff-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .th-staff-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .th-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #E67E22 0%, #F39C12 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+  
+  .th-staff-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+  
+  .status-icon {
+    font-size: 1.25rem;
+  }
+  
+  .status-icon.active {
+    color: #27AE60;
+  }
+  
+  .status-icon.leave {
+    color: #F39C12;
+  }
+  
+  .status-icon.inactive {
+    color: #E74C3C;
+  }
+  
+  .th-staff-card-body {
+    margin-bottom: 1.5rem;
+  }
+  
+  .th-staff-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.25rem 0;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .th-staff-id {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0 0 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .th-staff-position {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .th-department-icon {
+    color: #E67E22;
+    font-size: 1rem;
+  }
+  
+  .th-position-text {
+    font-weight: 500;
+    color: #1f2937;
+  }
+  
+  .th-staff-department {
+    display: inline-block;
+    background: rgba(230, 126, 34, 0.1);
+    color: #E67E22;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .th-staff-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .th-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  .th-detail-icon {
+    color: #9ca3af;
+    font-size: 0.75rem;
+    width: 12px;
+  }
+  
+  .th-staff-card-footer {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  /* Empty State */
+  .th-staff-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6b7280;
+  }
+  
+  .th-empty-icon {
+    font-size: 4rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+  }
+  
+  .th-empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .th-empty-message {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  /* Loading State */
+  .th-staff-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+  }
+  
+  .th-staff-error {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .th-filters-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .th-staff-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .th-staff-list {
+      padding: 1rem;
+    }
+    
+    .th-staff-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+    
+    .th-header-actions {
+      justify-content: flex-start;
+    }
+    
+    .th-staff-stats {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    
+    .th-staff-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .th-page-title {
+      font-size: 1.5rem;
+    }
+  }

@@ -15,7 +15,7 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
   FaStethoscope,
-  FaChartLine,
+  FaArrowUp,
   FaPlus,
   FaEye,
   FaShare,
@@ -169,7 +169,7 @@ const ChildProfile = () => {
     { id: 'overview', label: 'Overview', icon: FaUser },
     { id: 'medical', label: 'Medical', icon: FaStethoscope },
     { id: 'education', label: 'Education', icon: FaGraduationCap },
-    { id: 'growth', label: 'Growth', icon: FaChartLine },
+    { id: 'growth', label: 'Growth', icon: FaArrowUp },
     { id: 'documents', label: 'Documents', icon: FaFileAlt },
     { id: 'family', label: 'Family', icon: FaHeart },
     { id: 'notes', label: 'Case Notes', icon: FaEdit }
@@ -458,7 +458,7 @@ const ChildProfile = () => {
                         </div>
                       </div>
                       <div className="th-metric">
-                        <FaChartLine className="th-metric-icon" />
+                        <FaArrowUp className="th-metric-icon" />
                         <div className="th-metric-content">
                           <span className="th-metric-label">BMI</span>
                           <span className="th-metric-value">{derivedData.bmi}</span>

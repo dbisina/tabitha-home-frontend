@@ -6,7 +6,7 @@ import {
   FaGraduationCap, 
   FaHeart,
   FaPlus,
-  FaChartLine,
+  FaArrowUp,
   FaCalendarAlt,
   FaBell,
   FaArrowUp,

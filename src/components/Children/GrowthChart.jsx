@@ -4,7 +4,7 @@ import {
   FaRuler,
   FaWeight,
   FaCalendarAlt,
-  FaChartLine,
+  FaArrowUp,
   FaDownload,
   FaPrint,
   FaPlus,
@@ -199,7 +199,7 @@ const GrowthChart = ({ childId }) => {
       <div className="th-growth-header">
         <div className="th-header-info">
           <h3 className="th-section-title">
-            <FaChartLine className="th-section-icon" />
+            <FaArrowUp className="th-section-icon" />
             Growth & Development Tracking
           </h3>
           <p className="th-section-subtitle">
@@ -245,7 +245,7 @@ const GrowthChart = ({ childId }) => {
             className={`th-metric-tab ${activeMetric === 'bmi' ? 'active' : ''}`}
             onClick={() => setActiveMetric('bmi')}
           >
-            <FaChartLine className="th-tab-icon" />
+            <FaArrowUp className="th-tab-icon" />
             BMI
           </button>
         </div>
@@ -293,7 +293,7 @@ const GrowthChart = ({ childId }) => {
 
         <div className="th-stat-card bmi">
           <div className="th-stat-icon">
-            <FaChartLine />
+            <FaArrowUp />
           </div>
           <div className="th-stat-info">
             <span className="th-stat-value">{mockGrowthData.last_measurement.bmi}</span>

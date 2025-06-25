@@ -18,7 +18,7 @@ import {
   FaAward,
   FaUsers,
   FaClipboardList,
-  FaChartLine,
+  FaArrowUp,
   FaHistory,
   FaShieldAlt,
   FaExclamationTriangle,
@@ -303,7 +303,7 @@ const StaffProfile = () => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: FaUserCheck },
-    { id: 'performance', label: 'Performance', icon: FaChartLine },
+    { id: 'performance', label: 'Performance', icon: FaArrowUp },
     { id: 'children', label: 'Assigned Children', icon: FaChild },
     { id: 'cases', label: 'Case History', icon: FaClipboardList },
     { id: 'training', label: 'Training & Development', icon: FaBook },

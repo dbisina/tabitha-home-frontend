@@ -17,7 +17,7 @@ import {
   FaEye,
   FaDownload,
   FaPrint,
-  FaChartLine
+  FaArrowUp
 } from 'react-icons/fa';
 import { format, differenceInDays, isAfter } from 'date-fns';
 import Button from '../UI/Button/Button';
@@ -122,7 +122,7 @@ const MedicalHistory = ({ childId }) => {
     { id: 'overview', label: 'Overview', icon: FaStethoscope },
     { id: 'records', label: 'Medical Records', icon: FaHeartbeat },
     { id: 'vaccinations', label: 'Vaccinations', icon: FaSyringe },
-    { id: 'growth', label: 'Growth Chart', icon: FaChartLine },
+    { id: 'growth', label: 'Growth Chart', icon: FaArrowUp },
     { id: 'allergies', label: 'Allergies & Conditions', icon: FaAllergies }
   ];
 

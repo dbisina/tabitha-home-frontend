@@ -4,8 +4,8 @@ import {
   FaCalendarAlt, 
   FaRuler, 
   FaWeight,
-  FaTrendingUp,
-  FaTrendingDown,
+  FaArrowUp,
+  FaArrowDown,
   FaEquals
 } from 'react-icons/fa';
 import { formatDistanceToNow, differenceInDays } from 'date-fns';
@@ -53,7 +53,7 @@ const ChildStatsWidget = ({ child, derived }) => {
 
   const bmiInfo = getBMICategory(derived.bmi, derived.age);
   const healthScore = calculateHealthScore();
-  const TrendIcon = bmiInfo.trend === 'up' ? FaTrendingUp : bmiInfo.trend === 'down' ? FaTrendingDown : FaEquals;
+  const TrendIcon = bmiInfo.trend === 'up' ? FaArrowUp : bmiInfo.trend === 'down' ? FaArrowDown : FaEquals;
 
   const stats = [
     {
