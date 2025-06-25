@@ -23,6 +23,8 @@ import { format, differenceInDays, isAfter } from 'date-fns';
 import Button from '../UI/Button/Button';
 import Modal from '../UI/Modal/Modal';
 import { NIGERIAN_VACCINATION_SCHEDULE, GENOTYPE_RISKS, COMMON_MEDICAL_CONDITIONS } from '../../utils/nigerianMedicalData';
+import AddMedicalRecordModal from './AddMedicalRecordModal';
+import AddVaccinationModal from './AddVaccinationModal';
 import './MedicalHistory.css';
 
 const MedicalHistory = ({ childId }) => {

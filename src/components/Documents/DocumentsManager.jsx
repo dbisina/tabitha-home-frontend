@@ -42,6 +42,53 @@ import Modal from '../UI/Modal/Modal';
 import { NIGERIAN_DOCUMENT_TYPES, FILE_SIZE_LIMITS } from '../../utils/nigerianDocumentData';
 import './DocumentsManager.css';
 
+// Helper functions moved outside component for accessibility
+const getFileIcon = (type) => {
+  const iconMap = {
+    'pdf': FaFilePdf,
+    'doc': FaFileWord,
+    'docx': FaFileWord,
+    'xls': FaFileExcel,
+    'xlsx': FaFileExcel,
+    'jpg': FaFileImage,
+    'jpeg': FaFileImage,
+    'png': FaFileImage,
+    'gif': FaFileImage,
+    'image': FaFileImage
+  };
+  return iconMap[type] || FaFile;
+};
+
+const getAccessLevelInfo = (level) => {
+  const accessLevels = {
+    'public': { label: 'Public', color: 'success', icon: FaUnlock },
+    'general': { label: 'General Staff', color: 'primary', icon: FaLock },
+    'medical_staff': { label: 'Medical Staff Only', color: 'warning', icon: FaLock },
+    'restricted': { label: 'Restricted Access', color: 'error', icon: FaLock },
+    'confidential': { label: 'Confidential', color: 'error', icon: FaLock }
+  };
+  return accessLevels[level] || accessLevels['general'];
+};
+
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+const isExpiringSoon = (expiryDate) => {
+  if (!expiryDate) return false;
+  const days = differenceInDays(new Date(expiryDate), new Date());
+  return days <= 30 && days >= 0;
+};
+
+const isExpired = (expiryDate) => {
+  if (!expiryDate) return false;
+  return differenceInDays(new Date(expiryDate), new Date()) < 0;
+};
+
 const DocumentsManager = ({ childId, userRole = 'staff' }) => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [documents, setDocuments] = useState([]);
@@ -176,52 +223,6 @@ const DocumentsManager = ({ childId, userRole = 'staff' }) => {
     { id: 'personal', label: 'Personal Documents', icon: FaUser, count: mockDocuments.filter(d => d.category === 'personal').length },
     { id: 'family', label: 'Family Documents', icon: FaHome, count: mockDocuments.filter(d => d.category === 'family').length }
   ];
-
-  const getFileIcon = (type) => {
-    const iconMap = {
-      'pdf': FaFilePdf,
-      'doc': FaFileWord,
-      'docx': FaFileWord,
-      'xls': FaFileExcel,
-      'xlsx': FaFileExcel,
-      'jpg': FaFileImage,
-      'jpeg': FaFileImage,
-      'png': FaFileImage,
-      'gif': FaFileImage,
-      'image': FaFileImage
-    };
-    return iconMap[type] || FaFile;
-  };
-
-  const getAccessLevelInfo = (level) => {
-    const accessLevels = {
-      'public': { label: 'Public', color: 'success', icon: FaUnlock },
-      'general': { label: 'General Staff', color: 'primary', icon: FaLock },
-      'medical_staff': { label: 'Medical Staff Only', color: 'warning', icon: FaLock },
-      'restricted': { label: 'Restricted Access', color: 'error', icon: FaLock },
-      'confidential': { label: 'Confidential', color: 'error', icon: FaLock }
-    };
-    return accessLevels[level] || accessLevels['general'];
-  };
-
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
-  const isExpiringSoon = (expiryDate) => {
-    if (!expiryDate) return false;
-    const days = differenceInDays(new Date(expiryDate), new Date());
-    return days <= 30 && days >= 0;
-  };
-
-  const isExpired = (expiryDate) => {
-    if (!expiryDate) return false;
-    return differenceInDays(new Date(expiryDate), new Date()) < 0;
-  };
 
   const hasAccess = (document, userRole) => {
     const accessMatrix = {
