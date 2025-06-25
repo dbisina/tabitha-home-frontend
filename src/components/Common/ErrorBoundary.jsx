@@ -1,6 +1,6 @@
 // src/components/Common/ErrorBoundary.jsx
 import React from 'react';
-import { FaExclamationTriangle, FaRefresh, FaHome } from 'react-icons/fa';
+import { FaExclamationTriangle, FaRedo, FaHome } from 'react-icons/fa';
 import Button from '../UI/Button/Button';
 import './ErrorBoundary.css';
 
@@ -60,7 +60,7 @@ class ErrorBoundary extends React.Component {
             <div className="th-error-actions">
               <Button 
                 onClick={this.handleRefresh}
-                icon={FaRefresh}
+                icon={FaRedo}
                 variant="primary"
               >
                 Refresh Page

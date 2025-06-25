@@ -27,7 +27,7 @@ import {
 } from 'react-icons/fa';
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import Button from '../UI/Button/Button';
-import { formatPhoneNumber } from '../../utils/helpers';
+import { formatNigerianPhone } from '../../utils/helpers';
 import './FamilyContacts.css';
 
 const FamilyContacts = ({ childId }) => {
@@ -369,7 +369,7 @@ const FamilyContacts = ({ childId }) => {
                     <FaPhone className="th-detail-icon" />
                     <span className="th-detail-label">Phone:</span>
                     <span className="th-detail-value">
-                      {formatPhoneNumber(mockFamilyData.legal_guardian.phone)}
+                      {formatNigerianPhone(mockFamilyData.legal_guardian.phone)}
                     </span>
                   </div>
                   <div className="th-detail-item">
@@ -481,7 +481,7 @@ const FamilyContacts = ({ childId }) => {
                       {member.phone && (
                         <div className="th-detail-item">
                           <FaPhone className="th-detail-icon" />
-                          <span className="th-detail-value">{formatPhoneNumber(member.phone)}</span>
+                          <span className="th-detail-value">{formatNigerianPhone(member.phone)}</span>
                         </div>
                       )}
                       {member.email && (

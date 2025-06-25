@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { authAPI } from '../services/auth';
+import { authService } from '../services/auth';
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('th_token');
       if (token) {
         try {
-          const userData = await authAPI.getMe();
+          const userData = await authService.getMe();
           dispatch({
             type: 'LOGIN_SUCCESS',
             payload: { user: userData, token }
@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'CLEAR_ERROR' });
       
-      const response = await authAPI.login(credentials);
+      const response = await authService.login(credentials);
       
       dispatch({
         type: 'LOGIN_SUCCESS',
@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'CLEAR_ERROR' });
       
-      const response = await authAPI.register(userData);
+      const response = await authService.register(userData);
       
       dispatch({
         type: 'LOGIN_SUCCESS',
@@ -148,7 +148,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await authAPI.logout();
+      await authService.logout();
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -159,7 +159,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (updates) => {
     try {
-      const updatedUser = await authAPI.updateProfile(updates);
+      const updatedUser = await authService.updateProfile(updates);
       dispatch({ type: 'UPDATE_USER', payload: updatedUser });
       toast.success('Profile updated successfully');
       return updatedUser;

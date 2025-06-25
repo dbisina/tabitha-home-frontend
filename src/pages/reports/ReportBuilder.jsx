@@ -28,7 +28,7 @@ import {
   FaGraduationCap as FaEducation,
   FaHeartbeat,
   FaFileAlt,
-  FaDragIndicator,
+  FaGripVertical,
   FaCheckCircle,
   FaTimesCircle,
   FaClock,
@@ -40,7 +40,7 @@ import {
 } from 'react-icons/fa';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Button from '../../components/UI/Button/Button';
-import { NIGERIAN_STATES } from '../../utils/nigerianStaffData';
+import { NIGERIAN_STATES } from '../../utils/nigerianData';
 import './ReportBuilder.css';
 
 const ReportBuilder = () => {
@@ -533,7 +533,7 @@ const ReportBuilder = () => {
                                       {...provided.dragHandleProps}
                                       className="th-drag-handle"
                                     >
-                                      <FaDragIndicator />
+                                      <FaGripVertical />
                                     </div>
                                     <div className="th-field-content">
                                       <span className="th-field-label">{field.label}</span>
@@ -855,10 +855,141 @@ const ReportBuilder = () => {
               </div>
 
               {/* Preview Actions */}
-              <div className="th-preview-actions">
+                <div className="th-preview-actions">
                 <Button
-                  variant="outline"
-                  onClick={generatePreview}
+                  variant="primary"
                   icon={FaEye}
                   disabled={isGenerating || reportConfig.selected_fields.length === 0}
+                  onClick={generatePreview}
+                >
+                  {isGenerating ? 'Generating...' : 'Preview Report'}
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  icon={FaDownload}
+                  disabled={isGenerating || reportConfig.selected_fields.length === 0}
+                  onClick={saveReport}
+                >
+                  Generate & Download
+                </Button>
+              </div>
+
+              {/* Preview Data */}
+              {previewData && (
+                <div className="th-report-preview">
+                  <h3 className="th-section-title">Report Preview</h3>
                   
+                  {reportConfig.chart_type === 'table' ? (
+                    <div className="th-preview-table-container">
+                      <table className="th-preview-table">
+                        <thead>
+                          <tr>
+                            {reportConfig.selected_fields.map(field => (
+                              <th key={field.id}>{field.label}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {previewData.map((row, index) => (
+                            <tr key={index}>
+                              {reportConfig.selected_fields.map(field => (
+                                <td key={field.id}>{row[field.id]}</td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="th-preview-chart">
+                      <div className="th-chart-placeholder">
+                        <FaChartBar className="th-chart-icon" />
+                        <p>Chart visualization will appear here</p>
+                        <small>Sample data: {previewData.length} records</small>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Validation Warnings */}
+              {reportConfig.selected_fields.length === 0 && (
+                <div className="th-validation-warning">
+                  <FaExclamationTriangle className="th-warning-icon" />
+                  <div>
+                    <h4>No Fields Selected</h4>
+                    <p>Please go back to Step 2 and select at least one field for your report.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation Footer */}
+      <div className="th-builder-footer">
+        <div className="th-footer-content">
+          <div className="th-footer-left">
+            {currentStep > 1 && (
+              <Button
+                variant="outline"
+                onClick={() => setCurrentStep(currentStep - 1)}
+                icon={FaChevronDown}
+              >
+                Previous
+              </Button>
+            )}
+          </div>
+          
+          <div className="th-footer-center">
+            <span className="th-step-indicator">
+              Step {currentStep} of {steps.length}
+            </span>
+          </div>
+          
+          <div className="th-footer-right">
+            {currentStep < steps.length ? (
+              <Button
+                variant="primary"
+                onClick={() => setCurrentStep(currentStep + 1)}
+                disabled={
+                  (currentStep === 1 && !reportConfig.name) ||
+                  (currentStep === 2 && reportConfig.selected_fields.length === 0)
+                }
+              >
+                Next
+                <FaChevronUp className="th-btn-icon-right" />
+              </Button>
+            ) : (
+              <Button
+                variant="success"
+                onClick={saveReport}
+                disabled={isGenerating || reportConfig.selected_fields.length === 0}
+                icon={FaSave}
+              >
+                {isGenerating ? 'Saving...' : 'Save Report'}
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Loading Overlay */}
+      {isGenerating && (
+        <div className="th-loading-overlay">
+          <div className="th-loading-content">
+            <div className="th-spinner">
+              <FaClock className="th-spinner-icon" />
+            </div>
+            <h3>Generating Report...</h3>
+            <p>Please wait while we process your request</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ReportBuilder;

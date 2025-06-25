@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   FaArrowLeft, 
   FaEdit, 
@@ -35,7 +35,7 @@ import DocumentsList from '../../components/Children/DocumentsList';
 import CaseNotes from '../../components/Children/CaseNotes';
 import FamilyContacts from '../../components/Children/FamilyContacts';
 import LoadingSpinner from '../../components/UI/Loading/LoadingSpinner';
-import { childrenAPI } from '../../services/children';
+import { childrenService } from '../../services/children';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import './ChildProfile.css';
@@ -56,7 +56,7 @@ const ChildProfile = () => {
     error 
   } = useQuery(
     ['child', id],
-    () => childrenAPI.getChild(id),
+    () => childrenService.getChild(id),
     {
       staleTime: 5 * 60 * 1000, // 5 minutes
     }

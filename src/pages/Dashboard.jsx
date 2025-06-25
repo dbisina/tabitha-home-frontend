@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { 
   FaChild, 
   FaUsers, 
@@ -9,7 +9,6 @@ import {
   FaArrowUp,
   FaCalendarAlt,
   FaBell,
-  FaArrowUp,
   FaArrowDown
 } from 'react-icons/fa';
 import Button from '../components/UI/Button/Button';
@@ -20,7 +19,7 @@ import DashboardCharts from '../components/Dashboard/DashboardCharts';
 import UpcomingEvents from '../components/Dashboard/UpcomingEvents';
 import AlertsWidget from '../components/Dashboard/AlertsWidget';
 import WelcomeWidget from '../components/Dashboard/WelcomeWidget';
-import { dashboardAPI } from '../services/dashboard';
+import { dashboardService } from '../services/dashboard';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/UI/Loading/LoadingSpinner';
 import './Dashboard.css';
@@ -37,7 +36,7 @@ const Dashboard = () => {
     refetch 
   } = useQuery(
     ['dashboard', dateRange],
-    () => dashboardAPI.getDashboardData(dateRange),
+    () => dashboardService.getDashboardData(dateRange),
     {
       refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
       staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes

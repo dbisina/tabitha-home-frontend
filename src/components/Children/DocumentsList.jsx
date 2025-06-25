@@ -140,7 +140,7 @@ const DocumentsList = ({ childId }) => {
   // Document categories
   const documentCategories = [
     { id: 'all', label: 'All Documents', icon: FaFileAlt, count: mockDocuments.length },
-    { id: 'legal', label: 'Legal Documents', icon: FaShield, count: 2 },
+    { id: 'legal', label: 'Legal Documents', icon: FaShieldAlt, count: 2 },
     { id: 'medical', label: 'Medical Records', icon: FaFilePdf, count: 2 },
     { id: 'education', label: 'Education', icon: FaFileWord, count: 1 },
     { id: 'photos', label: 'Photos & Media', icon: FaFileImage, count: 1 }

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { 
   FaPlus, 
@@ -24,7 +24,7 @@ import ChildrenTable from '../../components/Children/ChildrenTable';
 import SearchInput from '../../components/Common/SearchInput';
 import FilterDropdown from '../../components/Common/FilterDropdown';
 import LoadingSpinner from '../../components/UI/Loading/LoadingSpinner';
-import { childrenAPI } from '../../services/children';
+import { childrenService } from '../../services/children';
 import { useAuth } from '../../context/AuthContext';
 import { NIGERIAN_STATES, GENOTYPES, BLOOD_TYPES } from '../../utils/nigerianData';
 import './ChildrenList.css';
@@ -55,7 +55,7 @@ const ChildrenList = () => {
     refetch 
   } = useQuery(
     ['children', { searchQuery, sortBy, sortOrder, filters }],
-    () => childrenAPI.getChildren({ searchQuery, sortBy, sortOrder, filters }),
+    () => childrenService.getChildren({ searchQuery, sortBy, sortOrder, filters }),
     {
       staleTime: 2 * 60 * 1000, // 2 minutes
       keepPreviousData: true,

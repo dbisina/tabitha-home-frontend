@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FaChild, FaArrowLeft, FaSave, FaEye } from 'react-icons/fa';
 import Button from '../../components/UI/Button/Button';
 import ChildForm from '../../components/Children/ChildForm';
-import { childrenAPI } from '../../services/children';
+import { childrenService } from '../../services/children';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import './AddChild.css';
@@ -18,7 +18,7 @@ const AddChild = () => {
 
   // Create child mutation
   const createChildMutation = useMutation(
-    (childData) => childrenAPI.createChild(childData),
+    (childData) => childrenService.createChild(childData),
     {
       onSuccess: (newChild) => {
         // Update the children list cache
