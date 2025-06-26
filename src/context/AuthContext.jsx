@@ -5,39 +5,40 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext();
 
 const initialState = {
-  user: null,
-  token: localStorage.getItem('th_token'),
-  isAuthenticated: false,
-  isLoading: true,
-  error: null,
-};
-
-const authReducer = (state, action) => {
-  switch (action.type) {
-    case 'SET_LOADING':
-      return { ...state, isLoading: action.payload };
-    
-    case 'LOGIN_SUCCESS':
-      localStorage.setItem('th_token', action.payload.token);
-      return {
-        ...state,
-        user: action.payload.user,
-        token: action.payload.token,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      };
-    
-    case 'LOGOUT':
-      localStorage.removeItem('th_token');
-      return {
-        ...state,
-        user: null,
-        token: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      };
+    user: null,
+    token: localStorage.getItem('th_token'), // Use consistent key
+    isAuthenticated: false,
+    isLoading: true,
+    error: null,
+  };
+  
+  const authReducer = (state, action) => {
+    switch (action.type) {
+      case 'SET_LOADING':
+        return { ...state, isLoading: action.payload };
+      
+      case 'LOGIN_SUCCESS':
+        localStorage.setItem('th_token', action.payload.token); // Use consistent key
+        return {
+          ...state,
+          user: action.payload.user,
+          token: action.payload.token,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        };
+      
+      case 'LOGOUT':
+        localStorage.removeItem('th_token'); // Use consistent key
+        localStorage.removeItem('th_user');  // Clear user data too
+        return {
+          ...state,
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: null,
+        };
     
     case 'SET_ERROR':
       return {

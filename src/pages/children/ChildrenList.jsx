@@ -53,14 +53,12 @@ const ChildrenList = () => {
     isLoading, 
     error,
     refetch 
-  } = useQuery(
-    ['children', { searchQuery, sortBy, sortOrder, filters }],
-    () => childrenService.getChildren({ searchQuery, sortBy, sortOrder, filters }),
-    {
-      staleTime: 2 * 60 * 1000, // 2 minutes
-      keepPreviousData: true,
-    }
-  );
+  } = useQuery({
+    queryKey: ['children', { searchQuery, sortBy, sortOrder, filters }],
+    queryFn: () => childrenService.getChildren({ searchQuery, sortBy, sortOrder, filters }),
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    placeholderData: (previousData) => previousData, // v5 replacement for keepPreviousData
+  });
 
   // Mock data for development
   const mockChildren = [

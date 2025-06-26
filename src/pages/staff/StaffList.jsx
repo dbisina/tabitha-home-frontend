@@ -110,14 +110,13 @@ const StaffList = () => {
   const { 
     data: staffData, 
     isLoading, 
-    error 
-  } = useQuery(
-    ['staff'],
-    () => Promise.resolve(mockStaffData),
-    {
-      staleTime: 5 * 60 * 1000,
-    }
-  );
+    error,
+    refetch 
+  } = useQuery({
+    queryKey: ['staff', searchTerm, departmentFilter, statusFilter],
+    queryFn: () => staffService.getStaff({ searchTerm, departmentFilter, statusFilter }),
+    staleTime: 5 * 60 * 1000,
+  });
 
   const departmentOptions = [
     'Child Care',

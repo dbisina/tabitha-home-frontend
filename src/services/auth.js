@@ -1,52 +1,16 @@
 // src/services/auth.js
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
-
-// Create axios instance with default config
-const authAPI = axios.create({
-  baseURL: `${API_URL}/auth`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Request interceptor to add auth token
-authAPI.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('th-token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor to handle auth errors
-authAPI.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('th-token');
-      localStorage.removeItem('th-user');
-      window.location.href = '/auth/login';
-    }
-    return Promise.reject(error);
-  }
-);
+import api from './api';
 
 export const authService = {
   // Login user
   login: async (credentials) => {
     try {
-      const response = await authAPI.post('/login', credentials);
-      const { token, user } = response.data.data;
+      const response = await api.post('/auth/login', credentials);
+      const { token, user } = response.data;
       
-      localStorage.setItem('th-token', token);
-      localStorage.setItem('th-user', JSON.stringify(user));
+      // Store with consistent key names
+      localStorage.setItem('th_token', token);
+      localStorage.setItem('th_user', JSON.stringify(user));
       
       return { token, user };
     } catch (error) {
@@ -54,44 +18,89 @@ export const authService = {
     }
   },
 
-  // Register user
+  // Register user (admin only)
   register: async (userData) => {
     try {
-      const response = await authAPI.post('/register', userData);
+      const response = await api.post('/auth/register', userData);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Registration failed');
     }
   },
 
-  // Logout user
-  logout: () => {
-    localStorage.removeItem('th-token');
-    localStorage.removeItem('th-user');
-    window.location.href = '/auth/login';
+  // Get current user (API call to verify token)
+  getMe: async () => {
+    try {
+      const response = await api.get('/auth/me');
+      return response.data.user;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to get user data');
+    }
   },
 
-  // Get current user
+  // Get user from localStorage (no API call)
   getCurrentUser: () => {
     try {
-      const user = localStorage.getItem('th-user');
+      const user = localStorage.getItem('th_user');
       return user ? JSON.parse(user) : null;
     } catch {
       return null;
     }
   },
 
+  // Logout user
+  logout: async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout API error:', error);
+    } finally {
+      localStorage.removeItem('th_token');
+      localStorage.removeItem('th_user');
+    }
+  },
+
+  // Update user profile
+  updateProfile: async (updates) => {
+    try {
+      const response = await api.patch('/auth/updateMe', updates);
+      const updatedUser = response.data.user;
+      
+      // Update localStorage
+      localStorage.setItem('th_user', JSON.stringify(updatedUser));
+      
+      return updatedUser;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Profile update failed');
+    }
+  },
+
+  // Update password
+  updatePassword: async (passwordData) => {
+    try {
+      const response = await api.patch('/auth/updatePassword', passwordData);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Password update failed');
+    }
+  },
+
   // Check if user is authenticated
   isAuthenticated: () => {
-    const token = localStorage.getItem('th-token');
-    const user = localStorage.getItem('th-user');
+    const token = localStorage.getItem('th_token');
+    const user = localStorage.getItem('th_user');
     return !!(token && user);
+  },
+
+  // Get token
+  getToken: () => {
+    return localStorage.getItem('th_token');
   },
 
   // Verify token
   verifyToken: async () => {
     try {
-      const response = await authAPI.get('/verify');
+      const response = await api.get('/auth/verify');
       return response.data;
     } catch (error) {
       throw new Error('Token verification failed');
@@ -101,7 +110,7 @@ export const authService = {
   // Request password reset
   requestPasswordReset: async (email) => {
     try {
-      const response = await authAPI.post('/forgot-password', { email });
+      const response = await api.post('/auth/forgot-password', { email });
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Password reset request failed');
@@ -111,7 +120,10 @@ export const authService = {
   // Reset password
   resetPassword: async (token, newPassword) => {
     try {
-      const response = await authAPI.post('/reset-password', { token, password: newPassword });
+      const response = await api.post('/auth/reset-password', { 
+        token, 
+        password: newPassword 
+      });
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Password reset failed');

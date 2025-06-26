@@ -54,13 +54,11 @@ const ChildProfile = () => {
     data: child, 
     isLoading, 
     error 
-  } = useQuery(
-    ['child', id],
-    () => childrenService.getChild(id),
-    {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    }
-  );
+  } = useQuery({
+    queryKey: ['child', id],
+    queryFn: () => childrenService.getChild(id),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   // Mock data for development
   const mockChild = {

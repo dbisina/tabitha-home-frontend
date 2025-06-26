@@ -34,14 +34,12 @@ const Dashboard = () => {
     isLoading, 
     error,
     refetch 
-  } = useQuery(
-    ['dashboard', dateRange],
-    () => dashboardService.getDashboardData(dateRange),
-    {
-      refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
-      staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes
-    }
-  );
+  } = useQuery({
+    queryKey: ['dashboard', dateRange],
+    queryFn: () => dashboardService.getDashboardData(dateRange),
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+    staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes
+  });
 
   // Mock data for development (remove when API is ready)
   const mockData = {

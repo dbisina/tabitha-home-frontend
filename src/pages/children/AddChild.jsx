@@ -17,33 +17,31 @@ const AddChild = () => {
   const [formData, setFormData] = useState({});
 
   // Create child mutation
-  const createChildMutation = useMutation(
-    (childData) => childrenService.createChild(childData),
-    {
-      onSuccess: (newChild) => {
-        // Update the children list cache
-        queryClient.invalidateQueries(['children']);
-        
-        toast.success(
-          `${newChild.first_name} ${newChild.last_name} has been successfully added to Tabitha Home!`,
-          {
-            duration: 5000,
-            icon: '🎉',
-          }
-        );
-        
-        // Navigate to the new child's profile
-        navigate(`/children/${newChild.id}`, {
-          state: { newChild: true }
-        });
-      },
-      onError: (error) => {
-        const errorMessage = error.response?.data?.message || 'Failed to add child';
-        toast.error(errorMessage);
-        console.error('Error creating child:', error);
-      }
+  const createChildMutation = useMutation({
+    mutationFn: (childData) => childrenService.createChild(childData),
+    onSuccess: (newChild) => {
+      // Update the children list cache
+      queryClient.invalidateQueries({ queryKey: ['children'] });
+      
+      toast.success(
+        `${newChild.first_name} ${newChild.last_name} has been successfully added to Tabitha Home!`,
+        {
+          duration: 5000,
+          icon: '🎉',
+        }
+      );
+      
+      // Navigate to the new child's profile
+      navigate(`/children/${newChild.id}`, {
+        state: { newChild: true }
+      });
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || 'Failed to add child';
+      toast.error(errorMessage);
+      console.error('Error creating child:', error);
     }
-  );
+  });
 
   const handleSubmit = async (data) => {
     try {
