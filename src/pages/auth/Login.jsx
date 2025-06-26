@@ -1,5 +1,6 @@
+// src/pages/auth/Login.jsx - Without registration link
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { FaEye, FaEyeSlash, FaUser, FaLock, FaArrowRight } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
@@ -102,16 +103,6 @@ const Login = () => {
           )}
         </div>
 
-        <div className="th-form-options">
-          <label className="th-checkbox-container">
-            <input type="checkbox" className="th-checkbox" />
-            <span className="th-checkbox-label">Remember me</span>
-          </label>
-          <Link to="/auth/forgot-password" className="th-link">
-            Forgot password?
-          </Link>
-        </div>
-
         <Button
           type="submit"
           variant="primary"
@@ -125,37 +116,12 @@ const Login = () => {
           Sign In
         </Button>
 
-        <div className="th-auth-divider">
-          <span>or</span>
-        </div>
-
         <div className="th-auth-footer">
-          <p>
-            Don't have an account?{' '}
-            <Link to="/auth/register" className="th-link th-link-primary">
-              Create Account
-            </Link>
+          <p className="th-text-muted">
+            Contact your administrator for account access
           </p>
         </div>
       </form>
-      <Button
-        type="button"
-        variant="secondary"
-        size="lg"
-        fullWidth
-        style={{ marginTop: '1rem' }}
-        loading={isLoading}
-        onClick={async () => {
-          try {
-            await login({ email: 'demo@tabitha.com', password: 'demopassword' });
-            navigate(from, { replace: true });
-          } catch (error) {
-            // Error handling is done in the context
-          }
-        }}
-      >
-        Sign in as Demo User
-      </Button>
     </div>
   );
 };

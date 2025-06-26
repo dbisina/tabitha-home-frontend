@@ -1,30 +1,58 @@
-// src/services/auth.js
+// src/services/auth.js - Enhanced error handling
 import api from './api';
 
 export const authService = {
   // Login user
   login: async (credentials) => {
     try {
+      console.log('Attempting login with:', { email: credentials.email });
+      
       const response = await api.post('/auth/login', credentials);
-      const { token, user } = response.data;
+      
+      // Handle different response structures
+      const token = response.token;
+      const user = response.data?.user || response.user;
+      
+      if (!token || !user) {
+        console.error('Invalid login response:', response);
+        throw new Error('Invalid login response');
+      }
       
       // Store with consistent key names
       localStorage.setItem('th_token', token);
       localStorage.setItem('th_user', JSON.stringify(user));
       
+      console.log('Login successful');
       return { token, user };
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Login failed');
+      console.error('Login error:', error);
+      throw new Error(error.response?.data?.message || error.message || 'Login failed');
     }
   },
 
-  // Register user (admin only)
-  register: async (userData) => {
+  // Create staff account (admin only)
+  createStaffAccount: async (staffData) => {
     try {
-      const response = await api.post('/auth/register', userData);
-      return response.data;
+      console.log('Creating staff account:', { email: staffData.email });
+      
+      const response = await api.post('/auth/createStaffAccount', staffData);
+      console.log('Staff creation response:', response);
+      
+      return response.data?.user || response.user;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Registration failed');
+      console.error('Staff creation error:', error);
+      
+      // Handle validation errors specifically
+      if (error.response?.status === 400) {
+        const errorData = error.response.data;
+        if (errorData.errors && Array.isArray(errorData.errors)) {
+          const validationMessages = errorData.errors.map(err => err.message || err.msg).join(', ');
+          throw new Error(`Validation failed: ${validationMessages}`);
+        }
+        throw new Error(errorData.message || 'Invalid request data');
+      }
+      
+      throw new Error(error.response?.data?.message || error.message || 'Failed to create staff account');
     }
   },
 
@@ -32,13 +60,14 @@ export const authService = {
   getMe: async () => {
     try {
       const response = await api.get('/auth/me');
-      return response.data.user;
+      return response.data?.user || response.user;
     } catch (error) {
+      console.error('Get user error:', error);
       throw new Error(error.response?.data?.message || 'Failed to get user data');
     }
   },
 
-  // Get user from localStorage (no API call)
+  // Other methods remain the same...
   getCurrentUser: () => {
     try {
       const user = localStorage.getItem('th_user');
@@ -48,7 +77,6 @@ export const authService = {
     }
   },
 
-  // Logout user
   logout: async () => {
     try {
       await api.post('/auth/logout');
@@ -60,13 +88,11 @@ export const authService = {
     }
   },
 
-  // Update user profile
   updateProfile: async (updates) => {
     try {
       const response = await api.patch('/auth/updateMe', updates);
-      const updatedUser = response.data.user;
+      const updatedUser = response.data?.user || response.user;
       
-      // Update localStorage
       localStorage.setItem('th_user', JSON.stringify(updatedUser));
       
       return updatedUser;
@@ -75,59 +101,23 @@ export const authService = {
     }
   },
 
-  // Update password
   updatePassword: async (passwordData) => {
     try {
       const response = await api.patch('/auth/updatePassword', passwordData);
-      return response.data;
+      return response.data || response;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Password update failed');
     }
   },
 
-  // Check if user is authenticated
   isAuthenticated: () => {
     const token = localStorage.getItem('th_token');
     const user = localStorage.getItem('th_user');
     return !!(token && user);
   },
 
-  // Get token
   getToken: () => {
     return localStorage.getItem('th_token');
-  },
-
-  // Verify token
-  verifyToken: async () => {
-    try {
-      const response = await api.get('/auth/verify');
-      return response.data;
-    } catch (error) {
-      throw new Error('Token verification failed');
-    }
-  },
-
-  // Request password reset
-  requestPasswordReset: async (email) => {
-    try {
-      const response = await api.post('/auth/forgot-password', { email });
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Password reset request failed');
-    }
-  },
-
-  // Reset password
-  resetPassword: async (token, newPassword) => {
-    try {
-      const response = await api.post('/auth/reset-password', { 
-        token, 
-        password: newPassword 
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Password reset failed');
-    }
   }
 };
 

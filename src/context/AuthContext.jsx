@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx - Without registration
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { authService } from '../services/auth';
 import toast from 'react-hot-toast';
@@ -5,60 +6,61 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext();
 
 const initialState = {
-    user: null,
-    token: localStorage.getItem('th_token'), // Use consistent key
-    isAuthenticated: false,
-    isLoading: true,
-    error: null,
-  };
-  
-  const authReducer = (state, action) => {
-    switch (action.type) {
-      case 'SET_LOADING':
-        return { ...state, isLoading: action.payload };
-      
-      case 'LOGIN_SUCCESS':
-        localStorage.setItem('th_token', action.payload.token); // Use consistent key
-        return {
-          ...state,
-          user: action.payload.user,
-          token: action.payload.token,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        };
-      
-      case 'LOGOUT':
-        localStorage.removeItem('th_token'); // Use consistent key
-        localStorage.removeItem('th_user');  // Clear user data too
-        return {
-          ...state,
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        };
+  user: null,
+  token: localStorage.getItem('th_token'),
+  isAuthenticated: false,
+  isLoading: true,
+  error: null,
+};
+
+const authReducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
     
+    case 'LOGIN_SUCCESS':
+      localStorage.setItem('th_token', action.payload.token);
+      localStorage.setItem('th_user', JSON.stringify(action.payload.user));
+      return {
+        ...state,
+        user: action.payload.user,
+        token: action.payload.token,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      };
+    
+    case 'LOGOUT':
+      localStorage.removeItem('th_token');
+      localStorage.removeItem('th_user');
+      return {
+        ...state,
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      };
+
     case 'SET_ERROR':
       return {
         ...state,
         error: action.payload,
         isLoading: false,
       };
-    
+
     case 'CLEAR_ERROR':
       return {
         ...state,
         error: null,
       };
-    
+
     case 'UPDATE_USER':
       return {
         ...state,
         user: { ...state.user, ...action.payload },
       };
-    
+
     default:
       return state;
   }
@@ -81,6 +83,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
           console.error('Auth check failed:', error);
           localStorage.removeItem('th_token');
+          localStorage.removeItem('th_user');
           dispatch({ type: 'LOGOUT' });
         }
       } else {
@@ -112,35 +115,7 @@ export const AuthProvider = ({ children }) => {
       
       return response;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
-      dispatch({ type: 'SET_ERROR', payload: errorMessage });
-      toast.error(errorMessage);
-      throw error;
-    }
-  };
-
-  const register = async (userData) => {
-    try {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      dispatch({ type: 'CLEAR_ERROR' });
-      
-      const response = await authService.register(userData);
-      
-      dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: {
-          user: response.user,
-          token: response.token
-        }
-      });
-      
-      toast.success('Registration successful! Welcome to Tabitha Home.', {
-        icon: '🎉',
-      });
-      
-      return response;
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Registration failed';
+      const errorMessage = error.message || 'Login failed';
       dispatch({ type: 'SET_ERROR', payload: errorMessage });
       toast.error(errorMessage);
       throw error;
@@ -165,7 +140,7 @@ export const AuthProvider = ({ children }) => {
       toast.success('Profile updated successfully');
       return updatedUser;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Update failed';
+      const errorMessage = error.message || 'Update failed';
       toast.error(errorMessage);
       throw error;
     }
@@ -174,7 +149,6 @@ export const AuthProvider = ({ children }) => {
   const value = {
     ...state,
     login,
-    register,
     logout,
     updateProfile,
     clearError: () => dispatch({ type: 'CLEAR_ERROR' }),

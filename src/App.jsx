@@ -1,4 +1,4 @@
-// src/App.jsx
+// src/App.jsx - Simplified without registration
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,7 +14,6 @@ import AuthLayout from './components/Layout/AuthLayout';
 
 // Pages
 import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
 import Dashboard from './pages/Dashboard';
 import ChildrenList from './pages/children/ChildrenList';
 import ChildProfile from './pages/children/ChildProfile';
@@ -22,6 +21,8 @@ import AddChild from './pages/children/AddChild';
 import StaffList from './pages/staff/StaffList';
 import Reports from './pages/reports/Reports';
 import ReportBuilder from './pages/reports/ReportBuilder';
+import StaffProfile from './pages/staff/StaffProfile';
+import AddStaff from './pages/staff/AddStaff';
 
 // Components
 import ProtectedRoute from './components/Common/ProtectedRoute';
@@ -51,12 +52,11 @@ function App() {
             <Router>
               <div className="th-app">
                 <Routes>
-                  {/* Auth Routes */}
+                  {/* Auth Routes - Login Only */}
                   <Route path="/auth/*" element={
                     <AuthLayout>
                       <Routes>
                         <Route path="login" element={<Login />} />
-                        <Route path="register" element={<Register />} />
                         <Route path="*" element={<Navigate to="/auth/login" replace />} />
                       </Routes>
                     </AuthLayout>
@@ -69,7 +69,7 @@ function App() {
                         <Routes>
                           <Route path="/" element={<Dashboard />} />
                           <Route path="/dashboard" element={<Dashboard />} />
-                          
+                       
                           {/* Children Routes */}
                           <Route path="/children" element={<ChildrenList />} />
                           <Route path="/children/:id" element={<ChildProfile />} />
@@ -77,6 +77,8 @@ function App() {
                           
                           {/* Staff Routes */}
                           <Route path="/staff" element={<StaffList />} />
+                          <Route path="/staff/:id" element={<StaffProfile />} />
+                          <Route path="/staff/add" element={<AddStaff />} />
                           
                           {/* Reports Routes */}
                           <Route path="/reports" element={<Reports />} />

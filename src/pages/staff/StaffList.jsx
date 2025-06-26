@@ -1,6 +1,7 @@
-// src/pages/staff/StaffList.jsx
+// src/pages/staff/StaffList.jsx - Fixed to use real API
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { 
   FaPlus, 
   FaSearch, 
@@ -26,87 +27,18 @@ import {
 } from 'react-icons/fa';
 import { format, parseISO } from 'date-fns';
 import Button from '../../components/UI/Button/Button';
-import SearchInput from '../../components/Common/SearchInput';
-import FilterDropdown from '../../components/Common/FilterDropdown';
 import LoadingSpinner from '../../components/UI/Loading/LoadingSpinner';
-import { formatNigerianPhone, calculateAge } from '../../utils/helpers';
+import { staffService } from '../../services/staff'; // Import the staff service
 import './StaffList.css';
 
 const StaffList = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState([]);
   const [statusFilter, setStatusFilter] = useState([]);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
 
-  // Mock data - replace with actual API call
-  const mockStaffData = {
-    data: [
-      {
-        id: 1,
-        staff_id: 'THS-001',
-        first_name: 'John',
-        last_name: 'Adebayo',
-        email: 'john.adebayo@tabithahome.org',
-        phone: '+234 803 123 4567',
-        position: 'Child Care Coordinator',
-        department: 'Child Care',
-        employment_type: 'Full-time',
-        status: 'Active',
-        hire_date: '2022-01-15',
-        date_of_birth: '1985-03-20',
-        address: 'Victoria Island, Lagos',
-        emergency_contact: '+234 807 987 6543',
-        qualifications: 'BSc Social Work',
-        experience_years: 8,
-        photo_url: null,
-        salary: 450000,
-        last_login: '2024-06-25T09:30:00Z'
-      },
-      {
-        id: 2,
-        staff_id: 'THS-002',
-        first_name: 'Dr. Sarah',
-        last_name: 'Okonkwo',
-        email: 'sarah.okonkwo@tabithahome.org',
-        phone: '+234 816 555 7890',
-        position: 'Medical Officer',
-        department: 'Medical',
-        employment_type: 'Full-time',
-        status: 'Active',
-        hire_date: '2021-08-10',
-        date_of_birth: '1982-11-15',
-        address: 'Ikeja, Lagos',
-        emergency_contact: '+234 803 111 2222',
-        qualifications: 'MBBS, Pediatrics Certification',
-        experience_years: 12,
-        photo_url: null,
-        salary: 850000,
-        last_login: '2024-06-24T16:45:00Z'
-      },
-      {
-        id: 3,
-        staff_id: 'THS-003',
-        first_name: 'Fatima',
-        last_name: 'Ibrahim',
-        email: 'fatima.ibrahim@tabithahome.org',
-        phone: '+234 709 333 4444',
-        position: 'Education Coordinator',
-        department: 'Education',
-        employment_type: 'Full-time',
-        status: 'Active',
-        hire_date: '2023-02-01',
-        date_of_birth: '1990-07-08',
-        address: 'Surulere, Lagos',
-        emergency_contact: '+234 805 555 6666',
-        qualifications: 'BEd Primary Education',
-        experience_years: 5,
-        photo_url: null,
-        salary: 380000,
-        last_login: '2024-06-25T08:15:00Z'
-      }
-    ]
-  };
-
+  // Real API call to fetch staff data
   const { 
     data: staffData, 
     isLoading, 
@@ -114,42 +46,49 @@ const StaffList = () => {
     refetch 
   } = useQuery({
     queryKey: ['staff', searchTerm, departmentFilter, statusFilter],
-    queryFn: () => staffService.getStaff({ searchTerm, departmentFilter, statusFilter }),
-    staleTime: 5 * 60 * 1000,
+    queryFn: () => staffService.getStaff({ 
+      search: searchTerm, 
+      department: departmentFilter.join(','), 
+      status: statusFilter.join(',') 
+    }),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2,
   });
 
   const departmentOptions = [
-    'Child Care',
-    'Medical',
-    'Education',
     'Administration',
+    'Child Care', 
+    'Education',
+    'Medical',
+    'Kitchen',
     'Security',
-    'Maintenance'
+    'Maintenance',
+    'Social Services'
   ];
 
   const statusOptions = [
     'Active',
     'On Leave',
-    'Suspended',
+    'Suspended', 
     'Terminated'
   ];
 
-  // Filter and search staff
+  // Filter and search staff - now working with real API data
   const filteredStaff = useMemo(() => {
     if (!staffData?.data) return [];
 
     return staffData.data.filter(staff => {
       const matchesSearch = !searchTerm || 
         `${staff.first_name} ${staff.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        staff.staff_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        staff.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        staff.department.toLowerCase().includes(searchTerm.toLowerCase());
+        staff.employee_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        staff.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        staff.department?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesDepartment = departmentFilter.length === 0 || 
         departmentFilter.includes(staff.department);
 
       const matchesStatus = statusFilter.length === 0 || 
-        statusFilter.includes(staff.status);
+        statusFilter.includes(staff.employment_status);
 
       return matchesSearch && matchesDepartment && matchesStatus;
     });
@@ -174,10 +113,38 @@ const StaffList = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      return format(parseISO(dateString), 'MMM dd, yyyy');
+    } catch (error) {
+      return 'Invalid Date';
+    }
+  };
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return 'N/A';
+    try {
+      const today = new Date();
+      const birth = new Date(birthDate);
+      let age = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+      }
+      
+      return `${age} years`;
+    } catch (error) {
+      return 'N/A';
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="th-staff-loading">
-        <LoadingSpinner size="lg" message="Loading staff..." />
+        <LoadingSpinner size="lg" />
+        <p>Loading staff members...</p>
       </div>
     );
   }
@@ -186,7 +153,10 @@ const StaffList = () => {
     return (
       <div className="th-staff-error">
         <h2>Error Loading Staff</h2>
-        <p>Unable to load staff data. Please try again later.</p>
+        <p>Unable to load staff data: {error.message}</p>
+        <Button onClick={refetch} variant="primary">
+          Retry
+        </Button>
       </div>
     );
   }
@@ -196,7 +166,10 @@ const StaffList = () => {
       {/* Header */}
       <div className="th-staff-header">
         <div className="th-header-content">
-          <h1 className="th-page-title">Staff Management</h1>
+          <h1 className="th-page-title">
+            <FaUsers className="th-title-icon" />
+            Staff Management
+          </h1>
           <p className="th-page-description">
             Manage staff records, roles, and permissions
           </p>
@@ -205,21 +178,22 @@ const StaffList = () => {
         <div className="th-header-actions">
           <Button 
             variant="outline" 
-            icon={FaDownload}
+            icon={<FaDownload />}
             size="sm"
           >
             Export
           </Button>
           <Button 
             variant="outline" 
-            icon={FaPrint}
+            icon={<FaPrint />}
             size="sm"
           >
             Print
           </Button>
           <Button 
             variant="primary" 
-            icon={FaPlus}
+            icon={<FaPlus />}
+            onClick={() => navigate('/staff/add')}
           >
             Add Staff
           </Button>
@@ -239,19 +213,19 @@ const StaffList = () => {
         </div>
         
         <div className="th-stat-card">
-          <div className="th-stat-icon active">
+          <div className="th-stat-icon">
             <FaUserCheck />
           </div>
           <div className="th-stat-content">
             <span className="th-stat-value">
-              {staffData?.data?.filter(s => s.status === 'Active').length || 0}
+              {staffData?.data?.filter(s => s.employment_status === 'Active').length || 0}
             </span>
-            <span className="th-stat-label">Active</span>
+            <span className="th-stat-label">Active Staff</span>
           </div>
         </div>
         
         <div className="th-stat-card">
-          <div className="th-stat-icon medical">
+          <div className="th-stat-icon">
             <FaUserMd />
           </div>
           <div className="th-stat-content">
@@ -263,141 +237,148 @@ const StaffList = () => {
         </div>
         
         <div className="th-stat-card">
-          <div className="th-stat-icon education">
+          <div className="th-stat-icon">
             <FaChalkboardTeacher />
           </div>
           <div className="th-stat-content">
             <span className="th-stat-value">
               {staffData?.data?.filter(s => s.department === 'Education').length || 0}
             </span>
-            <span className="th-stat-label">Education Staff</span>
+            <span className="th-stat-label">Teachers</span>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="th-staff-filters">
-        <div className="th-filters-row">
-          <SearchInput
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Search staff by name, ID, position..."
-            size="md"
-            className="th-staff-search"
-          />
-          
-          <FilterDropdown
-            options={departmentOptions}
-            value={departmentFilter}
-            onChange={setDepartmentFilter}
-            placeholder="All Departments"
-            multiSelect={true}
-            size="md"
-          />
-          
-          <FilterDropdown
-            options={statusOptions}
-            value={statusFilter}
-            onChange={setStatusFilter}
-            placeholder="All Status"
-            multiSelect={true}
-            size="md"
-          />
+      {/* Search and Filters */}
+      <div className="th-controls">
+        <div className="th-search-section">
+          <div className="th-search-wrapper">
+            <FaSearch className="th-search-icon" />
+            <input
+              type="text"
+              placeholder="Search staff by name, ID, position..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="th-search-input"
+            />
+          </div>
+        </div>
+
+        <div className="th-filter-section">
+          <select
+            value={departmentFilter.join(',')}
+            onChange={(e) => setDepartmentFilter(e.target.value ? [e.target.value] : [])}
+            className="th-filter-select"
+          >
+            <option value="">All Departments</option>
+            {departmentOptions.map(dept => (
+              <option key={dept} value={dept}>{dept}</option>
+            ))}
+          </select>
+
+          <select
+            value={statusFilter.join(',')}
+            onChange={(e) => setStatusFilter(e.target.value ? [e.target.value] : [])}
+            className="th-filter-select"
+          >
+            <option value="">All Status</option>
+            {statusOptions.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* Staff Grid */}
-      <div className="th-staff-grid">
-        {filteredStaff.map(staff => (
-          <div key={staff.id} className="th-staff-card">
-            <div className="th-staff-card-header">
-              <div className="th-staff-avatar">
-                {staff.photo_url ? (
-                  <img src={staff.photo_url} alt={`${staff.first_name} ${staff.last_name}`} />
-                ) : (
-                  <div className="th-avatar-placeholder">
-                    {staff.first_name.charAt(0)}{staff.last_name.charAt(0)}
-                  </div>
-                )}
-              </div>
-              
-              <div className="th-staff-status">
-                {getStatusIcon(staff.status)}
-              </div>
-            </div>
-            
-            <div className="th-staff-card-body">
-              <h3 className="th-staff-name">
-                {staff.first_name} {staff.last_name}
-              </h3>
-              <p className="th-staff-id">{staff.staff_id}</p>
-              
-              <div className="th-staff-position">
-                <span className="th-department-icon">
-                  {getDepartmentIcon(staff.department)}
-                </span>
-                <span className="th-position-text">{staff.position}</span>
-              </div>
-              
-              <div className="th-staff-department">
-                {staff.department}
-              </div>
-              
-              <div className="th-staff-details">
-                <div className="th-detail-item">
-                  <FaPhone className="th-detail-icon" />
-                  <span>{formatNigerianPhone(staff.phone)}</span>
-                </div>
-                
-                <div className="th-detail-item">
-                  <FaEnvelope className="th-detail-icon" />
-                  <span>{staff.email}</span>
-                </div>
-                
-                <div className="th-detail-item">
-                  <FaBirthdayCake className="th-detail-icon" />
-                  <span>Age: {calculateAge(staff.date_of_birth)}</span>
-                </div>
-                
-                <div className="th-detail-item">
-                  <FaCalendarAlt className="th-detail-icon" />
-                  <span>Hired: {format(parseISO(staff.hire_date), 'MMM yyyy')}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="th-staff-card-footer">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                icon={FaEye}
-              >
-                View
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                icon={FaEdit}
-              >
-                Edit
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filteredStaff.length === 0 && (
-        <div className="th-staff-empty">
-          <div className="th-empty-icon">
-            <FaUsers />
-          </div>
-          <h3 className="th-empty-title">No staff found</h3>
-          <p className="th-empty-message">
-            {searchTerm || departmentFilter.length > 0 || statusFilter.length > 0
-              ? 'Try adjusting your search criteria'
-              : 'No staff records available'
+      {/* Staff List */}
+      {filteredStaff.length === 0 ? (
+        <div className="th-empty-state">
+          <FaUsers className="th-empty-icon" />
+          <h3>No Staff Members Found</h3>
+          <p>
+            {staffData?.data?.length === 0 
+              ? "No staff members have been added yet. Click 'Add Staff' to get started."
+              : "No staff members match your current search and filter criteria."
             }
           </p>
+          {staffData?.data?.length === 0 && (
+            <Button 
+              variant="primary" 
+              icon={<FaPlus />}
+              onClick={() => navigate('/staff/add')}
+            >
+              Add First Staff Member
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className="th-staff-grid">
+          {filteredStaff.map(staff => (
+            <div key={staff._id} className="th-staff-card">
+              <div className="th-card-header">
+                <div className="th-staff-avatar">
+                  {staff.photo_url ? (
+                    <img src={staff.photo_url} alt={`${staff.first_name} ${staff.last_name}`} />
+                  ) : (
+                    <div className="th-avatar-placeholder">
+                      {staff.first_name?.[0]}{staff.last_name?.[0]}
+                    </div>
+                  )}
+                </div>
+                <div className="th-staff-status">
+                  {getStatusIcon(staff.employment_status)}
+                </div>
+              </div>
+
+              <div className="th-card-body">
+                <h3 className="th-staff-name">
+                  {staff.first_name} {staff.last_name}
+                </h3>
+                <p className="th-staff-position">{staff.position}</p>
+                <p className="th-staff-department">
+                  {getDepartmentIcon(staff.department)}
+                  {staff.department}
+                </p>
+
+                <div className="th-staff-details">
+                  <div className="th-detail-item">
+                    <FaIdCard className="th-detail-icon" />
+                    <span>{staff.employee_id || 'No ID'}</span>
+                  </div>
+                  <div className="th-detail-item">
+                    <FaEnvelope className="th-detail-icon" />
+                    <span>{staff.email}</span>
+                  </div>
+                  <div className="th-detail-item">
+                    <FaPhone className="th-detail-icon" />
+                    <span>{staff.phone}</span>
+                  </div>
+                  <div className="th-detail-item">
+                    <FaCalendarAlt className="th-detail-icon" />
+                    <span>Hired: {formatDate(staff.date_hired)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="th-card-actions">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={<FaEye />}
+                  onClick={() => navigate(`/staff/${staff._id}`)}
+                >
+                  View
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  icon={<FaEdit />}
+                  onClick={() => navigate(`/staff/${staff._id}/edit`)}
+                >
+                  Edit
+                </Button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
