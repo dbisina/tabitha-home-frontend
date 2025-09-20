@@ -1,4 +1,4 @@
-// src/services/api.js - Fixed version
+// src/services/api.js
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -30,7 +30,14 @@ api.interceptors.request.use(
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => {
-    // Return the full response data, not just response.data
+    // Handle 304 Not Modified responses
+    if (response.status === 304) {
+      console.log('Received 304 Not Modified, using cached data');
+      // For 304 responses, axios typically includes the cached data
+      return response.data || response;
+    }
+    
+    // Return the full response data for successful requests
     return response.data;
   },
   (error) => {
@@ -44,6 +51,10 @@ api.interceptors.response.use(
 
     // Handle specific error codes
     switch (status) {
+      case 400:
+        toast.error(data?.message || 'Bad request.');
+        break;
+        
       case 401:
         // Unauthorized - clear token and redirect to login
         localStorage.removeItem('th_token');
@@ -60,7 +71,7 @@ api.interceptors.response.use(
         break;
       
       case 404:
-        toast.error('Resource not found.');
+        // Don't show toast for 404s as they're often handled by components
         break;
       
       case 422:
@@ -77,7 +88,8 @@ api.interceptors.response.use(
         break;
       
       default:
-        toast.error(data?.message || 'An unexpected error occurred.');
+        // Don't show toast for other errors as they might be handled by components
+        break;
     }
 
     return Promise.reject(error);

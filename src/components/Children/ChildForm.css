@@ -207,12 +207,14 @@
     display: flex;
     flex-direction: column;
     gap: var(--th-space-2);
+    margin-bottom: 2rem;
   }
   
   .th-label {
-    font-size: var(--th-text-sm);
-    font-weight: 600;
-    color: var(--th-gray-700);
+    font-size: var(--th-text-base);
+    font-weight: 700;
+    color: var(--th-gray-800);
+    margin-bottom: 0.5rem;
   }
   
   .th-label-required::after {
@@ -221,56 +223,30 @@
     margin-left: var(--th-space-1);
   }
   
-  .th-input {
-    padding: var(--th-space-4);
-    border: 2px solid var(--th-gray-300);
+  .th-input, .th-select, .th-textarea {
+    padding: 1.1rem 1.2rem;
+    font-size: 1.08rem;
     border-radius: 12px;
-    font-size: var(--th-text-base);
+    border: 2px solid var(--th-gray-300);
     background: var(--th-white);
-    transition: var(--th-transition-fast);
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
   
-  .th-input:focus {
-    outline: none;
+  .th-input:focus, .th-select:focus, .th-textarea:focus {
     border-color: var(--th-primary-solid);
-    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.12);
   }
   
-  .th-input-error {
+  .th-input-error, .th-select.th-input-error, .th-textarea.th-input-error {
     border-color: var(--th-warm);
+    background: #fff6f6;
   }
   
-  .th-input-error:focus {
-    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-  }
-  
-  .th-select {
-    padding: var(--th-space-4);
-    border: 2px solid var(--th-gray-300);
-    border-radius: 12px;
-    font-size: var(--th-text-base);
-    background: var(--th-white);
-    cursor: pointer;
-    transition: var(--th-transition-fast);
-  }
-  
-  .th-textarea {
-    padding: var(--th-space-4);
-    border: 2px solid var(--th-gray-300);
-    border-radius: 12px;
-    font-size: var(--th-text-base);
-    background: var(--th-white);
-    resize: vertical;
-    min-height: 120px;
-    font-family: var(--th-font-primary);
-    transition: var(--th-transition-fast);
-  }
-  
-  .th-error-message {
-    font-size: var(--th-text-sm);
+  .th-error-text, .th-error-message {
     color: var(--th-warm);
-    font-weight: 500;
-    margin-top: var(--th-space-1);
+    font-size: 1rem;
+    margin-top: 0.25rem;
+    font-weight: 600;
   }
   
   /* Form Actions */
@@ -292,6 +268,13 @@
   .th-form-actions-right {
     display: flex;
     gap: var(--th-space-3);
+  }
+  
+  .th-form-actions .th-action-btn, .th-form-actions button, .th-form-footer button {
+    min-width: 120px;
+    min-height: 48px;
+    font-size: 1.08rem;
+    border-radius: 10px;
   }
   
   /* Photo Upload Section */
@@ -359,7 +342,7 @@
     
     .th-step-progress,
     .th-form-content {
-      padding: var(--th-space-6);
+      padding: var(--th-space-4);
     }
     
     .th-form-row,
@@ -383,6 +366,13 @@
     .th-form-actions-right {
       width: 100%;
       justify-content: center;
+    }
+    .th-form-group {
+      margin-bottom: 1.2rem;
+    }
+    .th-form-actions .th-action-btn, .th-form-actions button, .th-form-footer button {
+      min-width: 100%;
+      font-size: 1rem;
     }
   }
   

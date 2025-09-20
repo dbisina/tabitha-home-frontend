@@ -19,8 +19,8 @@ import ChildrenList from './pages/children/ChildrenList';
 import ChildProfile from './pages/children/ChildProfile';
 import AddChild from './pages/children/AddChild';
 import StaffList from './pages/staff/StaffList';
-import Reports from './pages/reports/Reports';
-import ReportBuilder from './pages/reports/ReportBuilder';
+//import Reports from './pages/reports/Reports';
+//import ReportBuilder from './pages/reports/ReportBuilder';
 import StaffProfile from './pages/staff/StaffProfile';
 import AddStaff from './pages/staff/AddStaff';
 
@@ -81,8 +81,8 @@ function App() {
                           <Route path="/staff/add" element={<AddStaff />} />
                           
                           {/* Reports Routes */}
-                          <Route path="/reports" element={<Reports />} />
-                          <Route path="/reports/builder" element={<ReportBuilder />} />
+                          {/*<Route path="/reports" element={<Reports />} />
+                          <Route path="/reports/builder" element={<ReportBuilder />} />*/}
                           
                           {/* Default redirect */}
                           <Route path="*" element={<Navigate to="/dashboard" replace />} />

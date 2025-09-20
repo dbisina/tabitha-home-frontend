@@ -148,12 +148,17 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="th-dashboard th-fade-in">
+    <div className="th-dashboard th-fade-in" style={{ padding: '2rem 0', minHeight: '100vh', background: 'var(--th-bg-dashboard, #f7f8fa)' }}>
       {/* Welcome Section */}
       <WelcomeWidget user={user} />
-
       {/* Stats Cards Grid */}
-      <div className="th-stats-grid th-grid th-grid-cols-4">
+      <div className="th-stats-grid" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gap: '2rem',
+        margin: '2rem 0',
+        width: '100%'
+      }}>
         <StatsCard
           title="Total Children"
           value={data.stats.totalChildren}
@@ -187,14 +192,18 @@ const Dashboard = () => {
           trend={data.stats.pendingCasesChange > 0 ? 'up' : 'down'}
         />
       </div>
-
       {/* Dashboard Content */}
-      <div className="th-dashboard-content th-grid">
+      <div className="th-dashboard-content" style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 340px',
+        gap: '2.5rem',
+        alignItems: 'flex-start',
+        width: '100%'
+      }}>
         <div className="th-dashboard-main">
           <RecentActivity activities={data.recentActivities} />
           <UpcomingEvents events={data.upcomingEvents} />   
         </div>
-        
         <div className="th-dashboard-sidebar">
           <AlertsWidget alerts={data.alerts} />
         </div>
